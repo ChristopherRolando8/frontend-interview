@@ -13,9 +13,11 @@ import {
   TableRow,
   Paper,
   IconButton,
+  Skeleton,
 } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import { useRetryFetch } from '@/hooks/useRetryFetch';
+import Image from 'next/image';
 
 interface Crypto {
   id: string;
@@ -69,7 +71,30 @@ const FavoritesPage = () => {
           Favorites
         </Typography>
         {loading ? (
-          <Typography variant="body1">Loading your favorite cryptocurrencies...</Typography>
+          <TableContainer component={Paper} sx={{ mb: 4 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  {Array.from({ length: 12 }).map((_, index) => (
+                    <TableCell key={index}>
+                      <Skeleton variant="text" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {Array.from({ length: 5 }).map((_, rowIndex) => (
+                  <TableRow key={rowIndex}>
+                    {Array.from({ length: 12 }).map((_, colIndex) => (
+                      <TableCell key={colIndex}>
+                        <Skeleton variant="rectangular" height={40} />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         ) : error ? (
           <Typography variant="body1">Failed to load favorite cryptocurrencies: {error}</Typography>
         ) : favorites.length === 0 ? (
@@ -98,7 +123,13 @@ const FavoritesPage = () => {
                   <TableRow key={crypto.id}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>
-                      <img src={crypto.image} alt={crypto.name} width="24" height="24" />
+                      <Image
+                        src={crypto.image}
+                        alt={crypto.name}
+                        width={24}
+                        height={24}
+                        quality={50}
+                      />
                     </TableCell>
                     <TableCell>{crypto.name}</TableCell>
                     <TableCell>{crypto.symbol.toUpperCase()}</TableCell>
@@ -118,7 +149,7 @@ const FavoritesPage = () => {
                     </TableCell>
                     <TableCell>{crypto.circulating_supply.toLocaleString()}</TableCell>
                     <TableCell>
-                      <IconButton onClick={() => removeFromFavorites(crypto.id)} style={{ color:'f0e68c' }}>
+                      <IconButton onClick={() => removeFromFavorites(crypto.id)} style={{ color: 'f0e68c' }}>
                         <StarIcon sx={{ color: '#ffeb3b' }} />
                       </IconButton>
                     </TableCell>

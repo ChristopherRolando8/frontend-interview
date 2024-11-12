@@ -2,12 +2,16 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import debounce from 'lodash/debounce';
-import { Box, Container, TextField, Button, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Tabs, Tab, IconButton } from '@mui/material';
+import {
+  Box, Container, TextField, Button, Table, TableBody,
+  TableCell, TableContainer, TableHead, TableRow, Paper, Tabs, Tab, IconButton, Skeleton,
+} from '@mui/material';
 import { useRetryFetch } from '../hooks/useRetryFetch';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import Image from 'next/image';
 
 interface Crypto {
   id: string;
@@ -146,9 +150,30 @@ const CryptoTracker = () => {
           sx={{ mb: 2 }}
         />
         {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
-            <CircularProgress />
-          </Box>
+          <TableContainer component={Paper} sx={{ mb: 4 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  {Array.from({ length: 12 }).map((_, index) => (
+                    <TableCell key={index}>
+                      <Skeleton variant="text" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {Array.from({ length: itemsPerPage }).map((_, rowIndex) => (
+                  <TableRow key={rowIndex}>
+                    {Array.from({ length: 12 }).map((_, colIndex) => (
+                      <TableCell key={colIndex}>
+                        <Skeleton variant="rectangular" height={40} />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         ) : error ? (
           <Box sx={{ textAlign: 'center', my: 4 }}>
             <p>{error}</p>
@@ -196,7 +221,15 @@ const CryptoTracker = () => {
                 {displayedCryptos.map((crypto, index) => (
                   <TableRow key={crypto.market_cap_rank}>
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell><img src={crypto.image} alt={crypto.name} width="24" height="24" /></TableCell>
+                    <TableCell>
+                      <Image
+                        src={crypto.image}
+                        alt={crypto.name}
+                        width={24}
+                        height={24}
+                        quality={50}
+                      />
+                    </TableCell>
                     <TableCell>{crypto.name}</TableCell>
                     <TableCell>{crypto.symbol.toUpperCase()}</TableCell>
                     <TableCell>${crypto.current_price.toLocaleString()}</TableCell>

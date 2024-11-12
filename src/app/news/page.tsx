@@ -2,7 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRetryFetch } from '@/hooks/useRetryFetch';
-import { Box, Typography, CircularProgress, List, ListItem, ListItemText, Link } from '@mui/material';
+import {
+  Box, Typography, List, ListItem, ListItemText, Link, Skeleton,
+} from '@mui/material';
 
 interface NewsItem {
   title: string;
@@ -29,9 +31,13 @@ export default function NewsPage() {
         Crypto News
       </Typography>
       {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-          <CircularProgress sx={{ color: 'yellow' }} />
-        </Box>
+        <List>
+          {Array.from({ length: 5 }).map((_, index) => (
+            <ListItem key={index} sx={{ marginBottom: '10px' }}>
+              <Skeleton variant="text" width="80%" height={30} />
+            </ListItem>
+          ))}
+        </List>
       ) : error ? (
         <Typography variant="h6" sx={{ color: 'red', textAlign: 'center' }}>
           Failed to load news: {error}
@@ -42,7 +48,12 @@ export default function NewsPage() {
             <ListItem key={index} sx={{ marginBottom: '10px' }}>
               <ListItemText
                 primary={
-                  <Link href={item.link} target="_blank" rel="noopener noreferrer" sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>
+                  <Link
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+                  >
                     {item.title}
                   </Link>
                 }
