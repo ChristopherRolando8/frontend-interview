@@ -21,9 +21,9 @@ interface Crypto {
   current_price: number;
   market_cap: number;
   total_volume: number;
-  high_24h: number | null;
-  low_24h: number | null;
+  price_change_percentage_1h_in_currency: number;
   price_change_percentage_24h: number;
+  price_change_percentage_7d_in_currency: number;
   circulating_supply: number;
   market_cap_rank: number;
 }
@@ -49,7 +49,7 @@ const CryptoTracker = () => {
   const itemsPerPage = 10;
 
   const { data: cryptos, error, loading } = useRetryFetch(
-    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false${selectedCategory !== '' ? `&category=${selectedCategory}` : ''}`
+    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d${selectedCategory !== '' ? `&category=${selectedCategory}` : ''}`
   );
 
   useEffect(() => {
@@ -154,7 +154,7 @@ const CryptoTracker = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  {Array.from({ length: 12 }).map((_, index) => (
+                  {Array.from({ length: 15 }).map((_, index) => (
                     <TableCell key={index}>
                       <Skeleton variant="text" />
                     </TableCell>
@@ -164,7 +164,7 @@ const CryptoTracker = () => {
               <TableBody>
                 {Array.from({ length: itemsPerPage }).map((_, rowIndex) => (
                   <TableRow key={rowIndex}>
-                    {Array.from({ length: 12 }).map((_, colIndex) => (
+                    {Array.from({ length: 15 }).map((_, colIndex) => (
                       <TableCell key={colIndex}>
                         <Skeleton variant="rectangular" height={40} />
                       </TableCell>
@@ -205,9 +205,9 @@ const CryptoTracker = () => {
                       {sortCriteria === 'total_volume' && sortOrder === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
                     </IconButton>
                   </TableCell>
-                  <TableCell>High (24h)</TableCell>
-                  <TableCell>Low (24h)</TableCell>
-                  <TableCell>Change (24h)</TableCell>
+                  <TableCell>1h Change</TableCell>
+                  <TableCell>24h Change</TableCell>
+                  <TableCell>7d Change</TableCell>
                   <TableCell>
                     Circulating Supply
                     <IconButton onClick={() => handleSort('circulating_supply')}>
@@ -235,9 +235,9 @@ const CryptoTracker = () => {
                     <TableCell>${crypto.current_price.toLocaleString()}</TableCell>
                     <TableCell>${crypto.market_cap.toLocaleString()}</TableCell>
                     <TableCell>${crypto.total_volume.toLocaleString()}</TableCell>
-                    <TableCell>{crypto.high_24h !== null ? `$${crypto.high_24h.toLocaleString()}` : 'N/A'}</TableCell>
-                    <TableCell>{crypto.low_24h !== null ? `$${crypto.low_24h.toLocaleString()}` : 'N/A'}</TableCell>
+                    <TableCell>{crypto.price_change_percentage_1h_in_currency?.toFixed(2)}%</TableCell>
                     <TableCell>{crypto.price_change_percentage_24h?.toFixed(2)}%</TableCell>
+                    <TableCell>{crypto.price_change_percentage_7d_in_currency?.toFixed(2)}%</TableCell>
                     <TableCell>{crypto.circulating_supply.toLocaleString()}</TableCell>
                     <TableCell>
                       <IconButton

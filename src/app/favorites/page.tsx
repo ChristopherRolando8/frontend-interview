@@ -27,9 +27,9 @@ interface Crypto {
   current_price: number;
   market_cap: number;
   total_volume: number;
-  high_24h: number | null;
-  low_24h: number | null;
+  price_change_percentage_1h_in_currency: number;
   price_change_percentage_24h: number;
+  price_change_percentage_7d_in_currency: number;
   circulating_supply: number;
   market_cap_rank: number;
 }
@@ -111,9 +111,9 @@ const FavoritesPage = () => {
                   <TableCell>Current Price</TableCell>
                   <TableCell>Market Cap</TableCell>
                   <TableCell>24h Volume</TableCell>
-                  <TableCell>High (24h)</TableCell>
-                  <TableCell>Low (24h)</TableCell>
-                  <TableCell>Change (24h)</TableCell>
+                  <TableCell>1h Change</TableCell>
+                  <TableCell>24h Change</TableCell>
+                  <TableCell>7d Change</TableCell>
                   <TableCell>Circulating Supply</TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
@@ -137,15 +137,13 @@ const FavoritesPage = () => {
                     <TableCell>${crypto.market_cap.toLocaleString()}</TableCell>
                     <TableCell>${crypto.total_volume.toLocaleString()}</TableCell>
                     <TableCell>
-                      {crypto.high_24h !== null ? `$${crypto.high_24h.toLocaleString()}` : 'N/A'}
+                      {crypto.price_change_percentage_1h_in_currency?.toFixed(2)}%
                     </TableCell>
                     <TableCell>
-                      {crypto.low_24h !== null ? `$${crypto.low_24h.toLocaleString()}` : 'N/A'}
+                      {crypto.price_change_percentage_24h?.toFixed(2)}%
                     </TableCell>
                     <TableCell>
-                      {crypto.price_change_percentage_24h !== null
-                        ? `${crypto.price_change_percentage_24h.toFixed(2)}%`
-                        : 'N/A'}
+                      {crypto.price_change_percentage_7d_in_currency?.toFixed(2)}%
                     </TableCell>
                     <TableCell>{crypto.circulating_supply.toLocaleString()}</TableCell>
                     <TableCell>
